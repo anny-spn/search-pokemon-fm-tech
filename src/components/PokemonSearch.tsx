@@ -23,19 +23,33 @@ export function PokemonSearch(){
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="pokemon-name">Search Pokémon</label>
-
+            <form onSubmit={handleSubmit} className="gap-3 flex items-center">
                 <input
-                    id="pokemon-name"
                     type="search"
                     name="name"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    placeholder="Search Pokémon"
+                    placeholder="Type Pokémon Name.."
+                    className="px-3 py-1 rounded-2xl bg-gray-300 border-4 border-fuchsia-600 text-sm text-gray-900
+                        focus:border-fuchsia-800 transition
+                    "
                 />
 
-                <button type="submit">Search</button>
+                <button
+                    type="submit"
+                    className="
+                        rounded-full
+                        border
+                        px-4
+                        py-1
+                        text-sm
+                        capitalize
+                        hover:bg-gray-600
+                        hover:cursor-pointer
+                        transition
+                    ">
+                    Search
+                </button>
             </form>
         </div>
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { GET_POKEMON_BY_NAME } from "@/graphql/queries/pokemon";
@@ -18,53 +19,113 @@ export function PokemonResult(){
         skip: !name
     });
 
-    if (!name) return <p>Search Pokémon</p>
-    if (loading) return <p>Loading...</p>;
+    if (!name) return <h1 className="text-2xl font-bold capitalize">Search Pokémon</h1>
+    if (loading) return <h1 className="text-2xl font-bold capitalize">Loading...</h1>;
+    if (!data?.pokemon) return <h1 className="text-2xl font-bold capitalize">Pokémon Not Found</h1>;
     if (error) return <p>Error: {error.message}</p>;
-    if (!data?.pokemon) return <p>Not Found</p>;
 
     const pokemon = data.pokemon;
 
     return(
         <div>
-            <h1>{pokemon.name}</h1>
-            <p>Types: {pokemon.types.join(', ')}</p>
-            <h2>Attacks</h2>
-            <h3>Fast</h3>
-            <ul>
-            {pokemon.attacks.fast.map((atk: any) => (
-                <li key={atk.name}>
-                    {atk.name} ({atk.type}): {atk.damage}
-                </li>
-            ))}
-            </ul>
+            {/* Name and Type */}
+            <div className="flex flex-col items-center">
+                <h1 className="text-2xl font-bold capitalize">{pokemon.name}</h1>
+                <p className="text-xl">({pokemon.types.join(', ')})</p>
+            </div>
 
-            <h3>Special</h3>
-            <ul>
-            {pokemon.attacks.special.map((atk: any) => (
-                <li key={atk.name}>
-                    {atk.name} ({atk.type}): {atk.damage}
-                </li>
-            ))}
-            </ul>
+            {/* Image */}
+            <div className="flex flex-col items-center m-2">
+                {pokemon.image && (
+                    <div className="relative w-48 h-48">
+                        <Image
+                            src={pokemon.image}
+                            alt={pokemon.name}
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                )}
+            </div>
+            
+            <div className="m-6 space-y-6 max-w-xl mx-auto">
+                {/* Attacks */}
+                <section>
+                    <h2 className="text-xl font-semibold mb-3">Attacks</h2>
 
-            <h2>Evolutions</h2>
-            {pokemon.evolutions ? (
-                <ul>
-                    {pokemon.evolutions.map((evo: any) => (
-                        <li key={evo.id}>
-                            <button
-                                type="button"
-                                onClick={() => router.push(`/?name=${evo.name}`)}
-                            >
-                                {evo.name}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No evolutions</p>
-            )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Fast Attacks */}
+                        <div className="rounded-lg border p-4">
+                            <h3 className="font-medium mb-2">⚡ Fast</h3>
+                            <ul className="space-y-1 text-sm">
+                                {pokemon.attacks.fast.map((atk) => (
+                                    <li
+                                        key={atk.name}
+                                        className="flex justify-between gap-2"
+                                    >
+                                        <span className="capitalize">
+                                            {atk.name} <span className="text-gray-500">({atk.type})</span>
+                                        </span>
+                                        <span className="font-medium">{atk.damage}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Special Attacks */}
+                        <div className="rounded-lg border p-4">
+                            <h3 className="font-medium mb-2">🔥 Special</h3>
+                            <ul className="space-y-1 text-sm">
+                                {pokemon.attacks.special.map((atk) => (
+                                    <li
+                                        key={atk.name}
+                                        className="flex justify-between gap-2"
+                                    >
+                                        <span className="capitalize">
+                                            {atk.name} <span className="text-gray-500">({atk.type})</span>
+                                        </span>
+                                        <span className="font-medium">{atk.damage}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Evolutions */}
+                <section>
+                    <h2 className="text-xl font-semibold mb-3">Evolutions</h2>
+
+                    {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
+                        <ul className="flex flex-wrap gap-3">
+                            {pokemon.evolutions.map((evo) => (
+                                <li key={evo.id}>
+                                    <button
+                                        type="button"
+                                        onClick={() => router.push(`/?name=${evo.name}`)}
+                                        className="
+                                            rounded-full
+                                            border
+                                            px-4
+                                            py-1
+                                            text-sm
+                                            capitalize
+                                            hover:bg-gray-600
+                                            hover:cursor-pointer
+                                            transition
+                                        "
+                                    >
+                                    {evo.name}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-sm text-gray-500">No evolutions</p>
+                    )}
+                </section>
+            </div>
         </div>
     );
 }

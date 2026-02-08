@@ -7,7 +7,7 @@ export default function Home() {
 
   return (
     <div>
-      <main style={{ padding: 24 }}>
+      <main className="min-h-screen flex flex-col items-center justify-center m-2">
         <PokemonSearch/>
         <br></br>
         <PokemonResult/>
