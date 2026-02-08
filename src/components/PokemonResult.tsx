@@ -1,11 +1,12 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { GET_POKEMON_BY_NAME } from "@/graphql/queries/pokemon";
 import type { GetPokemonByNameData, GetPokemonByNameVars } from "@/types/pokemon";
 
 export function PokemonResult(){
+    const router = useRouter();
     const searchParams = useSearchParams();
     const name = searchParams.get("name") ?? "";
 
@@ -26,8 +27,44 @@ export function PokemonResult(){
 
     return(
         <div>
-            <p>{pokemon.name}</p>
+            <h1>{pokemon.name}</h1>
             <p>Types: {pokemon.types.join(', ')}</p>
+            <h2>Attacks</h2>
+            <h3>Fast</h3>
+            <ul>
+            {pokemon.attacks.fast.map((atk: any) => (
+                <li key={atk.name}>
+                    {atk.name} ({atk.type}): {atk.damage}
+                </li>
+            ))}
+            </ul>
+
+            <h3>Special</h3>
+            <ul>
+            {pokemon.attacks.special.map((atk: any) => (
+                <li key={atk.name}>
+                    {atk.name} ({atk.type}): {atk.damage}
+                </li>
+            ))}
+            </ul>
+
+            <h2>Evolutions</h2>
+            {pokemon.evolutions ? (
+                <ul>
+                    {pokemon.evolutions.map((evo: any) => (
+                        <li key={evo.id}>
+                            <button
+                                type="button"
+                                onClick={() => router.push(`/?name=${evo.name}`)}
+                            >
+                                {evo.name}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No evolutions</p>
+            )}
         </div>
     );
 }

@@ -1,16 +1,21 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export function PokemonSearch(){
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const name = searchParams.get("name") ?? "";
+    const urlName = searchParams.get("name") ?? "";
+    const [value, setValue] = useState(urlName);
+
+    useEffect(() => {
+        setValue(urlName);
+    }, [urlName]);
 
     function handleSubmit(e: React.SubmitEvent<HTMLFormElement>){
         e.preventDefault();
-        const value = new FormData(e.currentTarget).get("name");
+        // const value = new FormData(e.currentTarget).get("name");
    
         if(!value) return;
         router.push(`/?name=${value.toString().toLowerCase()}`);
@@ -25,8 +30,9 @@ export function PokemonSearch(){
                     id="pokemon-name"
                     type="search"
                     name="name"
-                    defaultValue={name}
-                    placeholder="Search Pokémon by name"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    placeholder="Search Pokémon"
                 />
 
                 <button type="submit">Search</button>

@@ -9,6 +9,7 @@ export default function Home() {
     <div>
       <main style={{ padding: 24 }}>
         <PokemonSearch/>
+        <br></br>
         <PokemonResult/>
       </main>
     </div>
