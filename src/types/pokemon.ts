@@ -20,3 +20,6 @@ export interface GetPokemonByNameData {
   pokemon: Pokemon | null;
 }
 
+export interface GetPokemonByNameVars {
+  name: string;
+}
